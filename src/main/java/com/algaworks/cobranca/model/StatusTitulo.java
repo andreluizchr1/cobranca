@@ -1,4 +1,4 @@
-package com.algaworks.model;
+package com.algaworks.cobranca.model;
 
 public enum StatusTitulo {
 
