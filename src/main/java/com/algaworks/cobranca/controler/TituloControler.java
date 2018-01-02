@@ -23,6 +23,7 @@ public class TituloControler {
 	@RequestMapping(method = RequestMethod.POST)
 	public String salvar(Titulo titulo) {
 		System.out.println(">>>>" + titulo.getDescricao());
+		titulos.save(titulo);
 		return "CadastroTitulo";
 	}
 }
