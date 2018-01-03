@@ -30,6 +30,8 @@ public class TituloControler {
 	@RequestMapping
 	public ModelAndView pesquisar() {
 		ModelAndView mv = new ModelAndView("PesquisaTitulos");
+		List<Titulo> todosTitulos = titulos.findAll();
+		mv.addObject("titulos", todosTitulos);
 		return mv;
 	}
 
