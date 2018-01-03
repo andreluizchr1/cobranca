@@ -27,6 +27,12 @@ public class TituloControler {
 		return mv;
 	}
 
+	@RequestMapping
+	public ModelAndView pesquisar() {
+		ModelAndView mv = new ModelAndView("PesquisaTitulos");
+		return mv;
+	}
+
 	@RequestMapping(method = RequestMethod.POST)
 	public ModelAndView salvar(Titulo titulo) {
 		System.out.println(">>>>" + titulo.getDescricao());
