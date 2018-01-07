@@ -2,9 +2,9 @@ package com.algaworks.cobranca.controler;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.jar.Attributes;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
@@ -37,7 +37,7 @@ public class TituloControler {
 
 	@RequestMapping
 	public ModelAndView pesquisar() {
-		
+
 		List<Titulo> todosTitulos = titulos.findAll();
 		ModelAndView mv = new ModelAndView("PesquisaTitulos");
 		mv.addObject("titulos", todosTitulos);
@@ -52,15 +52,24 @@ public class TituloControler {
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
-	public String salvar(@Validated Titulo titulo, Errors errors, RedirectAttributes attributes) {
+	public String salvar(@Validated Titulo titulo, Errors errors,
+			RedirectAttributes attributes) {
 
 		if (errors.hasErrors()) {
 			return CADASTRO_VIEW;
 		}
 
-		titulos.save(titulo);
-		attributes.addFlashAttribute("mensagem", "Titulo salvo com sucesso!");
-		return "redirect:/titulos/novo";
+		try {
+			titulos.save(titulo);
+			attributes.addFlashAttribute("mensagem",
+					"Titulo salvo com sucesso!");
+			return "redirect:/titulos/novo";
+		} catch (DataIntegrityViolationException e) {
+			// TODO Auto-generated catch block
+			errors.rejectValue("dataVencimento", null,
+					"Formato de data inválido");
+			return CADASTRO_VIEW;
+		}
 
 	}
 
@@ -68,9 +77,10 @@ public class TituloControler {
 	public List<StatusTitulo> todosStatusTitulo() {
 		return Arrays.asList(StatusTitulo.values());
 	}
-	
-	@RequestMapping(value = "{codigo}" ,method = RequestMethod.DELETE)
-	public String excluir(@PathVariable Long codigo, RedirectAttributes attributes) {
+
+	@RequestMapping(value = "{codigo}", method = RequestMethod.DELETE)
+	public String excluir(@PathVariable Long codigo,
+			RedirectAttributes attributes) {
 		titulos.delete(codigo);
 		attributes.addFlashAttribute("mensagem", "Título excluído com sucesso");
 		return "redirect:/titulos";

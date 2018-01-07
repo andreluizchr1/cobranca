@@ -26,6 +26,6 @@ $('#confirmacaoExclusaoModal').on(
 });
 
 $(function(){
-	$(['[rel="tooltip"]').tooltip();
+	$('[rel="tooltip"]').tooltip();
 });
 
