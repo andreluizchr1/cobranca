@@ -18,6 +18,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.algaworks.cobranca.model.StatusTitulo;
 import com.algaworks.cobranca.model.Titulo;
 import com.algaworks.cobranca.repository.Titulos;
+import com.algaworks.cobranca.service.CadastroTituloService;
 
 @Controller
 @RequestMapping("/titulos")
@@ -25,6 +26,9 @@ public class TituloControler {
 
 	@Autowired
 	private Titulos titulos;
+
+	@Autowired
+	private CadastroTituloService cadastroTituloService;
 
 	private static final String CADASTRO_VIEW = "CadastroTitulo";
 
@@ -60,14 +64,13 @@ public class TituloControler {
 		}
 
 		try {
-			titulos.save(titulo);
+			cadastroTituloService.salvar(titulo);
 			attributes.addFlashAttribute("mensagem",
 					"Titulo salvo com sucesso!");
 			return "redirect:/titulos/novo";
-		} catch (DataIntegrityViolationException e) {
+		} catch (IllegalArgumentException e) {
 			// TODO Auto-generated catch block
-			errors.rejectValue("dataVencimento", null,
-					"Formato de data inválido");
+			errors.rejectValue("dataVencimento", null, e.getMessage());
 			return CADASTRO_VIEW;
 		}
 
@@ -81,7 +84,7 @@ public class TituloControler {
 	@RequestMapping(value = "{codigo}", method = RequestMethod.DELETE)
 	public String excluir(@PathVariable Long codigo,
 			RedirectAttributes attributes) {
-		titulos.delete(codigo);
+		cadastroTituloService.excluir(codigo);
 		attributes.addFlashAttribute("mensagem", "Título excluído com sucesso");
 		return "redirect:/titulos";
 	}
