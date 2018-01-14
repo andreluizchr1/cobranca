@@ -17,15 +17,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.algaworks.cobranca.model.StatusTitulo;
 import com.algaworks.cobranca.model.Titulo;
-import com.algaworks.cobranca.repository.Titulos;
+import com.algaworks.cobranca.repository.filter.TituloFilter;
 import com.algaworks.cobranca.service.CadastroTituloService;
 
 @Controller
 @RequestMapping("/titulos")
 public class TituloControler {
-
-	@Autowired
-	private Titulos titulos;
 
 	@Autowired
 	private CadastroTituloService cadastroTituloService;
@@ -40,11 +37,10 @@ public class TituloControler {
 	}
 
 	@RequestMapping
-	public ModelAndView pesquisar() {
+	public ModelAndView pesquisar(@ModelAttribute("filtro") TituloFilter filtro) {
 
-		List<Titulo> todosTitulos = titulos.findAll();
 		ModelAndView mv = new ModelAndView("PesquisaTitulos");
-		mv.addObject("titulos", todosTitulos);
+		mv.addObject("titulos", cadastroTituloService.filtrar(filtro));
 		return mv;
 	}
 
@@ -56,8 +52,7 @@ public class TituloControler {
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
-	public String salvar(@Validated Titulo titulo, Errors errors,
-			RedirectAttributes attributes) {
+	public String salvar(@Validated Titulo titulo, Errors errors, RedirectAttributes attributes) {
 
 		if (errors.hasErrors()) {
 			return CADASTRO_VIEW;
@@ -65,8 +60,7 @@ public class TituloControler {
 
 		try {
 			cadastroTituloService.salvar(titulo);
-			attributes.addFlashAttribute("mensagem",
-					"Titulo salvo com sucesso!");
+			attributes.addFlashAttribute("mensagem", "Titulo salvo com sucesso!");
 			return "redirect:/titulos/novo";
 		} catch (IllegalArgumentException e) {
 			// TODO Auto-generated catch block
@@ -82,16 +76,15 @@ public class TituloControler {
 	}
 
 	@RequestMapping(value = "{codigo}", method = RequestMethod.DELETE)
-	public String excluir(@PathVariable Long codigo,
-			RedirectAttributes attributes) {
+	public String excluir(@PathVariable Long codigo, RedirectAttributes attributes) {
 		cadastroTituloService.excluir(codigo);
 		attributes.addFlashAttribute("mensagem", "Título excluído com sucesso");
 		return "redirect:/titulos";
 	}
-	
+
 	@RequestMapping(value = "/{codigo}/receber", method = RequestMethod.PUT)
 	public @ResponseBody String receber(@PathVariable Long codigo) {
 		return cadastroTituloService.receber(codigo);
 	}
-	
+
 }
