@@ -15,13 +15,13 @@
 		<div class="panel-heading">
 			<div class="clearfix">
 				<h1 class="panel-title aw-titulo-panel">Pesquisa de Título</h1>
-				<a class="btn btn-link aw-link-panel" href="/titulos/novo">Novo Título</a>
+				<a class="btn btn-link aw-link-panel" th:href="@{/titulos/novo}">Novo Título</a>
 			</div>
 		</div>
 
 		<div class="panel-body">
 		
-			<form action="/titulos" method="GET" class="form-horizontal" th:object="${filtro}">
+			<form th:action="@{/titulos}" method="GET" class="form-horizontal" th:object="${filtro}">
 				
 				<div class="form-group">
 					
